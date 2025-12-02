@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestro Álbum de Boda</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- New landing section with cover and button to view album -->
+    <div id="landing-section" class="landing-section">
+        <div class="landing-overlay"></div>
+        <div class="landing-content">
+            <h1 class="landing-title">Nuestra Boda</h1>
+            <p class="landing-subtitle">Un día inolvidable</p>
+            <button id="view-album-btn" class="view-album-btn">Ver Álbum</button>
+        </div>
+    </div>
+
+    <!-- Main content hidden by default, shown after clicking button -->
+    <div id="main-content" class="main-content hidden">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="header-title">Nuestros Momentos Especiales</h1>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- Only moments section, removed "all photos" section -->
+            <section class="section">
+                <h2 class="section-title">Momentos</h2>
+                <div id="albums-grid" class="albums-grid">
+                    <div class="loading">Cargando momentos...</div>
+                </div>
+            </section>
+
+            <section id="gallery-section" class="section hidden">
+                <button id="back-btn" class="back-btn">← Volver a Momentos</button>
+                <h2 id="gallery-title" class="section-title"></h2>
+                <div id="gallery-grid" class="gallery-grid"></div>
+            </section>
+        </main>
+
+        <div id="lightbox" class="lightbox hidden">
+            <button class="lightbox-close">×</button>
+            <button class="lightbox-prev">‹</button>
+            <button class="lightbox-next">›</button>
+            <button class="lightbox-download" title="Descargar foto">⬇</button>
+            <img class="lightbox-img" src="/placeholder.svg" alt="">
+            <div class="lightbox-counter"></div>
+        </div>
+    </div>
+
+    <!-- Firebase CDN integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzyFSpQSlo5ZrV-OioFxvgyPMsRLvELKQ",
+            authDomain: "boda-725be.firebaseapp.com",
+            projectId: "boda-725be",
+            storageBucket: "boda-725be.firebasestorage.app",
+            messagingSenderId: "970840545058",
+            appId: "1:970840545058:web:a49837df3e80f0a8cdf77b",
+            measurementId: "G-4C066E3VN1"
+        };
+
+        console.log("[v0] Initializing Firebase...");
+        const app = initializeApp(firebaseConfig);
+        window.db = getFirestore(app);
+        console.log("[v0] Firebase initialized successfully");
+    </script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

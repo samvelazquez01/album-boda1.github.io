@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Álbum de Boda</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <h1>Panel de Administración</h1>
+            <div class="connection-status">
+                <div class="status-indicator" id="firebase-status">
+                    <span class="status-dot"></span>
+                    <span>Firebase</span>
+                </div>
+                <div class="status-indicator" id="google-drive-status">
+                    <span class="status-dot"></span>
+                    <span>Google Drive</span>
+                </div>
+            </div>
+            <!-- Removed old Google Sign-In container, added new auth UI -->
+            <div class="auth-controls">
+                <button id="connect-google-btn" class="connect-btn">Conectar Google Drive</button>
+                <div id="google-signin-status" class="google-signin-status"></div>
+            </div>
+            <a href="index.html" class="view-site-btn">Ver Sitio Público</a>
+        </header>
+
+        <main class="admin-main">
+            <!-- Cover Section -->
+            <section class="admin-section">
+                <h2 class="admin-section-title">Portada del Álbum</h2>
+                <div class="cover-upload-area">
+                    <div class="cover-preview" id="cover-preview">
+                        <span class="cover-placeholder">Sin portada</span>
+                    </div>
+                    <input type="file" id="cover-input" accept="image/*" class="file-input">
+                    <label for="cover-input" class="upload-btn">Cambiar Portada</label>
+                    <button id="delete-cover-btn" class="delete-btn hidden">Eliminar Portada</button>
+                </div>
+            </section>
+
+            <!-- Albums/Moments management -->
+            <section class="admin-section">
+                <h2 class="admin-section-title">Gestión de Momentos</h2>
+                <div class="album-create">
+                    <input type="text" id="album-name-input" placeholder="Nombre del momento (ej: La Ceremonia, La Recepción)" class="album-input">
+                    <button id="create-album-btn" class="create-btn">Crear Momento</button>
+                </div>
+                <div id="albums-list" class="albums-list">
+                    <div class="loading">Cargando momentos...</div>
+                </div>
+            </section>
+
+            <!-- Photos management with album selection -->
+            <section class="admin-section">
+                <h2 class="admin-section-title">Subir Fotos</h2>
+                <div class="upload-controls">
+                    <select id="album-select" class="album-select">
+                        <option value="">Selecciona un momento</option>
+                    </select>
+                    <div class="upload-area" id="upload-area">
+                        <input type="file" id="photos-input" accept="image/*" multiple class="file-input">
+                        <label for="photos-input" class="upload-label">
+                            <span class="upload-icon">📷</span>
+                            <span>Selecciona fotos o arrastra aquí</span>
+                            <span class="upload-hint">Puedes seleccionar múltiples fotos (⌘+A en Mac)</span>
+                        </label>
+                    </div>
+                </div>
+                <div id="upload-progress" class="upload-progress hidden">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p class="progress-text"></p>
+                </div>
+                <div id="preview-grid" class="preview-grid"></div>
+            </section>
+
+            <!-- Photos list with delete capability -->
+            <section class="admin-section">
+                <h2 class="admin-section-title">Fotos Subidas</h2>
+                <div class="filter-controls">
+                    <select id="filter-album-select" class="album-select">
+                        <option value="">Todos los momentos</option>
+                    </select>
+                </div>
+                <div id="photos-list" class="photos-grid">
+                    <div class="loading">Cargando fotos...</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Firebase CDN integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzyFSpQSlo5ZrV-OioFxvgyPMsRLvELKQ",
+            authDomain: "boda-725be.firebaseapp.com",
+            projectId: "boda-725be",
+            storageBucket: "boda-725be.firebasestorage.app",
+            messagingSenderId: "970840545058",
+            appId: "1:970840545058:web:a49837df3e80f0a8cdf77b",
+            measurementId: "G-4C066E3VN1"
+        };
+
+        window.googleConfig = {
+            clientId: "149912677352-1mekl3e82tv1ge84fvsivol0b0lt8tqp.apps.googleusercontent.com",
+            clientSecret: "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",
+            scope: "https://www.googleapis.com/auth/drive.file",
+            redirectUri: "http://127.0.0.1:5500/admin.html"
+        };
+
+        async function testConnections() {
+            try {
+                console.log("[v0] Initializing Firebase with config:", firebaseConfig);
+                const app = initializeApp(firebaseConfig);
+                window.db = getFirestore(app);
+                console.log("[v0] Firebase connected successfully");
+                document.getElementById('firebase-status').classList.add('connected');
+            } catch (error) {
+                console.error("[v0] Firebase connection failed:", error);
+                document.getElementById('firebase-status').classList.add('disconnected');
+            }
+        }
+
+        testConnections();
+    </script>
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
