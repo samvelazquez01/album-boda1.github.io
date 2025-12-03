@@ -39,12 +39,10 @@ async function loadAlbums() {
       const album = albumDoc.data()
       const albumId = albumDoc.id
 
-      // Get photos count
       const photosSnapshot = await getDocs(collection(window.db, "photos"))
       const albumPhotos = photosSnapshot.docs.filter((doc) => doc.data().albumId === albumId)
       const photoCount = albumPhotos.length
 
-      // Get first photo as thumbnail
       let thumbnailUrl = "/wedding-moment-elegant.jpg"
       if (albumPhotos.length > 0) {
         thumbnailUrl = albumPhotos[0].data().url
@@ -109,14 +107,12 @@ async function loadAlbumPhotos(albumId) {
   }
 }
 
-// Back button
 document.getElementById("back-btn").addEventListener("click", () => {
   document.getElementById("gallery-section").classList.add("hidden")
   document.querySelector(".section:first-of-type").classList.remove("hidden")
   currentAlbum = null
 })
 
-// Lightbox functionality
 function openLightbox(index) {
   currentPhotoIndex = index
   updateLightbox()
@@ -146,12 +142,10 @@ function prevPhoto() {
   updateLightbox()
 }
 
-// Lightbox controls
 document.querySelector(".lightbox-close").addEventListener("click", closeLightbox)
 document.querySelector(".lightbox-next").addEventListener("click", nextPhoto)
 document.querySelector(".lightbox-prev").addEventListener("click", prevPhoto)
 
-// Keyboard navigation
 document.addEventListener("keydown", (e) => {
   const lightbox = document.getElementById("lightbox")
   if (!lightbox.classList.contains("hidden")) {
@@ -166,7 +160,6 @@ if (downloadBtn) {
   downloadBtn.addEventListener("click", async () => {
     const currentUrl = currentPhotos[currentPhotoIndex].url
     try {
-      // Fetch image and download
       const response = await fetch(currentUrl)
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
@@ -179,7 +172,6 @@ if (downloadBtn) {
       document.body.removeChild(a)
     } catch (error) {
       console.error("[v0] Error downloading photo:", error)
-      // Fallback: open in new tab
       window.open(currentUrl, "_blank")
     }
   })
@@ -190,3 +182,4 @@ window.addEventListener("DOMContentLoaded", () => {
   loadCoverImage()
   loadAlbums()
 })
+
